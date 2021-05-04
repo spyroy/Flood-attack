@@ -7,3 +7,5 @@ when -t or -r not specified the default ip address is 127.0.0.1 and the default 
 We tested the progaram by running it from ubuntu, and the other person checked the target's pc on wireshark. we managed to see all RST packets or the udp packets that was sent. 
 
 Matan Greenberg wrote the send_tcp function and Roi Mash wrote the send_udp function.
+
+![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/tcp%20capture.png)
