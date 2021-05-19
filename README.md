@@ -8,8 +8,8 @@ We tested the progaram by running it from ubuntu, and the other person checked t
 
 Matan Greenberg wrote the send_tcp function and Roi Mash wrote the send_udp function.
 
-![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/Q4%20tcp.png)
-![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/Q4%20udp.png)
+![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/tcp%20Q4.png)
+![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/udp%20Q4.png)
 
 To run question 5 open terminal ant type - "sudo ./Q5 -t [target's ip] -p [target's port]"
 where -t -p are optional and the order does not matter.
