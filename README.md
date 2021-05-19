@@ -17,4 +17,6 @@ when -t or -p not specified the default ip address is ::1 and the default port i
 
 in this question we use the loopback interface so tests were done only locally.
 
+Roi Mash wrote the usage menu and Matan Greenberg wrote the sending procedure.
+
 ![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/Q5%20ipv6%20udp.png)
