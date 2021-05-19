@@ -15,6 +15,6 @@ To run question 5 open terminal ant type - "sudo ./Q5 -t [target's ip] -p [targe
 where -t -p are optional and the order does not matter.
 when -t or -p not specified the default ip address is ::1 and the default port is 443.
 
-in this question we use the loopback interface so tests were done inly locally.
+in this question we use the loopback interface so tests were done only locally.
 
 ![](https://github.com/spyroy/Security-Protocols-Assignment/blob/main/Q5%20ipv6%20udp.png)
