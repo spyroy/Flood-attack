@@ -30,6 +30,17 @@ struct pseudo_header
 	struct tcphdr tcp;
 };
 
+struct pseudo_headerr    
+{
+	unsigned int source_address;
+	unsigned int dest_address;
+	unsigned char placeholder;
+	unsigned char protocol;
+	unsigned short udp_length;
+	
+	struct udphdr udp;
+};
+
 // the regular checksum
 unsigned short csum(unsigned short *ptr,int nbytes) 
 {
@@ -175,10 +186,42 @@ void send_tcp(char* destination_ip, int destination_port)
 	struct sockaddr_in sin;
 	struct pseudo_header psh;
 	
-	strcpy(source_ip , "222.111.111.111");
+	char first[3]  ,second[3], third[3], fourth[3];
+	
+	sprintf(first,"%d", rand()%255);
+	sprintf(second, "%d",rand()%255);
+	sprintf(third, "%d",rand()%255);
+	sprintf(fourth, "%d",rand()%255);
+
+	
+	char ipp [32];
+	
+	ipp[0] = first[0];
+	ipp[1] = first[1];
+	ipp[2] = first[2];
+	ipp[3] = '.';
+	ipp[4] = second[0];
+	ipp[5] = second[1];
+	ipp[6] = second[2];
+	ipp[7] = '.';
+	ipp[8] = third[0];
+	ipp[9] = third[1];
+	ipp[10] = third[2];
+	ipp[11] = '.';
+	ipp[12] = fourth[0];
+	ipp[13] = fourth[1];
+	ipp[14] = fourth[2];
+	
+	
+	
+	
+	
+	
+	strcpy(source_ip , ipp);
+	
   
 	sin.sin_family = AF_INET;
-	sin.sin_port = htons(222);
+	sin.sin_port = htons(123);
 	sin.sin_addr.s_addr = inet_addr (destination_ip);
 	
 	//zero out the buffer 
@@ -187,7 +230,7 @@ void send_tcp(char* destination_ip, int destination_port)
 	//Fill the IP Header
 	ip_header->ihl = 5;
 	ip_header->version = 4;
-	ip_header->tos = 0; //0x08
+	ip_header->tos = 0; 
 	ip_header->tot_len = sizeof (struct ip) + sizeof (struct tcphdr);
 	ip_header->id = rand();	//we give this packet random id
 	ip_header->frag_off = 0;
@@ -200,7 +243,7 @@ void send_tcp(char* destination_ip, int destination_port)
 	ip_header->check = csum ((unsigned short *) datagram, ip_header->tot_len >> 1);
 	
 	//TCP Header
-	tcp_header->source = htons (222);
+	tcp_header->source = htons (123);
 	tcp_header->dest = htons (destination_port);
 	tcp_header->seq = rand();
 	tcp_header->ack_seq = 0;
@@ -252,6 +295,8 @@ void send_tcp(char* destination_ip, int destination_port)
 //Wrote by Roi Mash
 void send_udp(char* destination_ip, int destination_port)
 {
+	struct pseudo_headerr psh;
+	
 	int sd;
 	sd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
 	if (sd == -1) 
@@ -260,12 +305,39 @@ void send_udp(char* destination_ip, int destination_port)
 	}
 	
 	char source_ip[32];
-	strcpy(source_ip , "222.111.111.111");
+	
+	char first[3]  ,second[3], third[3], fourth[3];
+	
+	sprintf(first,"%d", rand()%255);
+	sprintf(second, "%d",rand()%255);
+	sprintf(third, "%d",rand()%255);
+	sprintf(fourth, "%d",rand()%255);
+
+	
+	char ipp [32];
+	
+	ipp[0] = first[0];
+	ipp[1] = first[1];
+	ipp[2] = first[2];
+	ipp[3] = '.';
+	ipp[4] = second[0];
+	ipp[5] = second[1];
+	ipp[6] = second[2];
+	ipp[7] = '.';
+	ipp[8] = third[0];
+	ipp[9] = third[1];
+	ipp[10] = third[2];
+	ipp[11] = '.';
+	ipp[12] = fourth[0];
+	ipp[13] = fourth[1];
+	ipp[14] = fourth[2];
+	
+	strcpy(source_ip , ipp);
 	
 	//ip\port source and destination
 	unsigned long ip_src = inet_addr(source_ip);
 	unsigned long ip_dst = inet_addr(destination_ip);
-	unsigned short p_src = (unsigned short) 111;
+	unsigned short p_src = (unsigned short) 123;
 	unsigned short p_dst = (unsigned short) destination_port;
 	
 	struct sockaddr_in sin;
@@ -294,9 +366,13 @@ void send_udp(char* destination_ip, int destination_port)
  		exit(-1);
  	}
  	
+ 	sin.sin_family = AF_INET;
+	sin.sin_port = htons(123);
+	sin.sin_addr.s_addr = inet_addr (destination_ip);
+ 	
  	ip->ip_v = 4;
 	ip->ip_hl = 5;
-	ip->ip_tos = 0;  //0x08
+	ip->ip_tos = 0;
 	ip->ip_len = sizeof(packet_size);
 	ip->ip_ttl = 255;
 	ip->ip_off = 0;
@@ -306,10 +382,19 @@ void send_udp(char* destination_ip, int destination_port)
 	ip->ip_src.s_addr = ip_src;
 	ip->ip_dst.s_addr = ip_dst;
 	
+	
 	udp->uh_sport = p_src;
 	udp->uh_dport = p_dst;
 	udp->uh_ulen = htons(sizeof(struct udphdr ) + 1);
 	udp->uh_sum = 0;
+	
+	psh.source_address = inet_addr( source_ip );
+	psh.dest_address = sin.sin_addr.s_addr;
+	psh.placeholder = 0;
+	psh.protocol = IPPROTO_UDP;
+	psh.udp_length = htons(20);
+	
+	udp->uh_sum = csum( (unsigned short*) &psh , sizeof (struct pseudo_header));
 	
 	if (sendto(sd, dgm, packet_size, 0, (struct sockaddr *) &sin, sizeof(struct sockaddr)) < 0) 
 	{
